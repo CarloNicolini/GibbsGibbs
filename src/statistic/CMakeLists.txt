@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 
 set(STATISTIC_HDRS 
-BayesNetwork.h
+#BayesNetwork.h
 Density.h
 DExample.h
 Distribution.h
@@ -11,7 +11,7 @@ Sampler.h
 )
 
 set(STATISTIC_SRCS
-BayesNetwork.cpp
+#BayesNetwork.cpp
 Density.cpp
 DExample.cpp
 DMultivariateGaussian.cpp

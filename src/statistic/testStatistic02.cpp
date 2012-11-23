@@ -58,70 +58,40 @@ using namespace util;
 int main(int argc, char*argv[])
 {
 
-	randomizeStart();
-	srand(time(0));
+	//randomizeStart();
 	
-	unsigned int nDimensions=2;
-	double domainMin =-10;
-	double domainMax = 10;
-	double domainStep= 0.1;
-	
-	vector < pair<double, double> > domain;
-	
-	double dgranularity= (abs(domainMax-domainMin))/domainStep;
-	unsigned int granularity = floor(dgranularity+0.5);
-	unsigned int nGibbsBurnIn=0;
-	unsigned int nGibbsValid=1000;
-	
-	domain.resize(nDimensions);
-	for (unsigned int i=0; i<nDimensions; i++)
-		domain[i] = pair<double,double>(domainMin,domainMax);
-	
-        DMultivariateGaussian model(nDimensions);
-       
-        Inferencer inferencer;
-        inferencer.init( &model, nDimensions,granularity, domainStep, domain );
-        /*
-        for ( unsigned i=1000; i<=5000; i+=500)
-        {
-        inferencer.init( &model, nDimensions,granularity, domainStep, domain );
-        cerr << i << " " << inferencer.gibbsSamplingIntegral(nGibbsBurnIn,i) << endl;        
-        }
-        */
-        
-        Sampler sampler;
-        VectorXd cdf(2000),pdf(2000);
-        
-        double x=-6;
-        double delta=abs(x)/1000.0;
-        for ( int i=0; i<2000; i++)
-        {
-                pdf(i) = exp(-(0.5*(x*x) ));
-                //cout << x << " " << exp(-(0.5*(x*x) )) << endl;
-                x+=delta;
-        }
-        
-        pdf*=1.0/(sqrt(2*M_PI));
-        
-        cout << sampler.fullIntegrate(pdf,delta) << endl;
-        //cerr << cdf.sum()*delta << endl;
-        sampler.discreteCumulativeDistribution(pdf,cdf);
-        for ( int i=0; i<10; i++)
-                sampler.inverseCumulativeSampling(cdf,delta);
-                
-        /*
-        x=-5;
-        double sum=cdf.sum();
-        cdf/=(sum/(1000.0));
-        for ( int i=0; i<2000; i++)
-        {
-                cout << x << " " << cdf(i) << endl;
-                x+=delta;
-        }
+	if ( !argc )
+	{
+		cerr << "Inferencer for bayesian modeling\nCarlo Nicolini, July 2011" << endl;
+		cerr << "Usage: ./test \"[parameters file]\" \"[matrix output]\" \n" << endl;
+		exit(0);	
+	}
 
-        for ( int i=0; i<100000; i++)
-                cerr << sampler.inverseCumulativeSampling(cdf,delta) << endl;
-        */
-        return 0;
+	if (argv[1]==NULL)
+	{
+		cerr << "Inferencer for bayesian modeling\nCarlo Nicolini, July 2011" << endl;
+		cerr << "Usage: ./test \"[parameters file]\" \"[matrix output]\" \n" << endl;
+                exit(0);
+	}
+	
+	ifstream params;
+	
+	BayesNetwork bayes;
+	
+	params.open(argv[1]);
+        bayes.loadParameterFile(params);
+
+        if ( argv[2] != NULL )
+        {
+	ofstream matrixoutput;
+	matrixoutput.open(argv[2]);
+	bayes.computeModel(matrixoutput);
+	}
+	else
+	{
+	bayes.computeModel(cout);
+	}
+
+	return 0;
 }
 
