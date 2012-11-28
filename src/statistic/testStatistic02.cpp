@@ -59,38 +59,6 @@ int main(int argc, char*argv[])
 {
 
 	//randomizeStart();
-	
-	if ( !argc )
-	{
-		cerr << "Inferencer for bayesian modeling\nCarlo Nicolini, July 2011" << endl;
-		cerr << "Usage: ./test \"[parameters file]\" \"[matrix output]\" \n" << endl;
-		exit(0);	
-	}
-
-	if (argv[1]==NULL)
-	{
-		cerr << "Inferencer for bayesian modeling\nCarlo Nicolini, July 2011" << endl;
-		cerr << "Usage: ./test \"[parameters file]\" \"[matrix output]\" \n" << endl;
-                exit(0);
-	}
-	
-	ifstream params;
-	
-	BayesNetwork bayes;
-	
-	params.open(argv[1]);
-        bayes.loadParameterFile(params);
-
-        if ( argv[2] != NULL )
-        {
-	ofstream matrixoutput;
-	matrixoutput.open(argv[2]);
-	bayes.computeModel(matrixoutput);
-	}
-	else
-	{
-	bayes.computeModel(cout);
-	}
 
 	return 0;
 }
